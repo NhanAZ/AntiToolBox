@@ -10,58 +10,52 @@ use pocketmine\network\mcpe\protocol\LoginPacket;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Config;
 
-class Loader extends PluginBase implements Listener
-{
-    public Config $config;
+class Loader extends PluginBase implements Listener {
 
-    public function onEnable()
-    {
-        $this->getServer()->getPluginManager()->registerEvents($this, $this);
-        $this->saveResource("config.yml");
-        $this->config = new Config($this->getDataFolder() . "config.yml", Config::YAML);
-    }
+	public Config $config;
 
-    /**
-     * @param DataPacketReceiveEvent $event
-     * @priority NORMAL
-     * @ignoreCancelled TRUE
-     */
-    public function onRecieve (DataPacketReceiveEvent $event)
-    {
-        $player = $event->getPlayer();
-        $packet = $event->getPacket();
+	public function onEnable() {
+		$this->getServer()->getPluginManager()->registerEvents($this, $this);
+		$this->saveResource("config.yml");
+		$this->config = new Config($this->getDataFolder() . "config.yml", Config::YAML);
+	}
 
-        if ($packet instanceof LoginPacket)
-        {
-            $deviceOS = (int)$packet->clientData["DeviceOS"];
-            $deviceModel = (string)$packet->clientData["DeviceModel"];
+	/**
+	 * @param DataPacketReceiveEvent $event
+	 * @priority NORMAL
+	 * @ignoreCancelled TRUE
+	 */
+	public function onRecieve(DataPacketReceiveEvent $event) {
+		$player = $event->getPlayer();
+		$packet = $event->getPacket();
 
-            if ($deviceOS !== 1) //AndroidOS
-            {
-                return;
-            }
+		if ($packet instanceof LoginPacket) {
+			$deviceOS = (int)$packet->clientData["DeviceOS"];
+			$deviceModel = (string)$packet->clientData["DeviceModel"];
 
-            /**
-             * Something about device model check, for example:
-             * Original client: XIAOMI Note 8 Pro
-             * Toolbox client: Xiaomi Note 8 Pro
-             *
-             * For another Example
-             * Original client: SAMSUNG SM-A105F
-             * Toolbox client: samsung SM-A105F
-             */
+			if ($deviceOS !== 1) { //AndroidOS
+				return;
+			}
 
-            $name = explode(" ", $deviceModel);
-            if (!isset($name[0]))
-            {
-                return;
-            }
-            $check = $name[0];
-            $check = strtoupper($check);
-            if ($check !== $name[0])
-            {
-                $player->close("", $this->config->get("kick-message"));
-            }
-        }
-    }
+			/**
+			 * Something about device model check, for example:
+			 * Original client: XIAOMI Note 8 Pro
+			 * Toolbox client: Xiaomi Note 8 Pro
+			 *
+			 * For another Example
+			 * Original client: SAMSUNG SM-A105F
+			 * Toolbox client: samsung SM-A105F
+			 */
+
+			$name = explode(" ", $deviceModel);
+			if (!isset($name[0])) {
+				return;
+			}
+			$check = $name[0];
+			$check = strtoupper($check);
+			if ($check !== $name[0]) {
+				$player->close("", $this->config->get("kick-message"));
+			}
+		}
+	}
 }
