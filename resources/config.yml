@@ -1,1 +1,3 @@
-kick-message: "Please use original client to join"
+---
+kickMessage: "Please use original client to join!"
+...
