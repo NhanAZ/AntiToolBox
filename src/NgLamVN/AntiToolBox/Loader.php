@@ -45,9 +45,7 @@ class Loader extends PluginBase implements Listener {
 			if (!isset($name[0])) {
 				return;
 			}
-			$check = $name[0];
-			$check = strtoupper($check);
-			if ($check !== $name[0]) {
+			if (strtoupper($name[0]) !== $name[0]) {
 				$player->disconnect($this->getConfig()->get("kickMessage"));
 			}
 		}
