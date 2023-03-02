@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace NgLamVN\AntiToolBox;
 
+use NhanAZ\libBedrock\Jwt;
 use pocketmine\event\Listener;
 use pocketmine\event\server\DataPacketReceiveEvent;
-use pocketmine\network\mcpe\JwtUtils;
 use pocketmine\network\mcpe\protocol\LoginPacket;
 use pocketmine\network\mcpe\protocol\types\DeviceOS;
 use pocketmine\plugin\PluginBase;
@@ -27,9 +27,9 @@ class Loader extends PluginBase implements Listener {
 		$player = $event->getOrigin();
 		$packet = $event->getPacket();
 		if ($packet instanceof LoginPacket) {
-			$clientDataJwt = JwtUtils::parse($packet->clientDataJwt)[1];
-			$deviceOS = $clientDataJwt["DeviceOS"];
-			$deviceModel = $clientDataJwt["DeviceModel"];
+			$jwt = Jwt::parse($packet->clientDataJwt);
+			$deviceOS = $jwt->getDeviceOS();
+			$deviceModel = $jwt->getDeviceModel();
 			if ($deviceOS !== DeviceOS::ANDROID) {
 				return;
 			}

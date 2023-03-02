@@ -6,4 +6,7 @@ projects:
   AntiToolBox:
     path: ""
     icon: icon.png
+    libs:
+      - src: NhanAZ/libBedrock/libBedrock
+        version: 0.0.8
 ...
